@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\employee;
 use App\Http\Requests\StoreemployeeRequest;
 use App\Http\Requests\UpdateemployeeRequest;
+use App\Models\Employee;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -15,25 +15,22 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {   
-        $employees = employee::query()->where(function (Builder $builder) use ($request) {
-            $name = $request->input('name');
-            if ($name) {
-                $builder->where('first_name', 'like', "%$name%")
-                    ->orWhere('last_name', 'like', "%$name%");
-            }
+        $employees = Employee::query()->orderBy('id', 'desc');
 
-            $position = $request->input('position');
-            if ($position) {
-                $builder->where('position', 'like', "%$position%");
-            }
-            $ktp = $request->input('ktp');
-            if ($ktp) {
-                $builder->where('ktp', 'like', "%$ktp%");
-            }
-        });
-
+        if ($request->has('search') && !is_null($request->search)) {
+            $employees->where('first_name', 'like', "%{$request->search}%")->orWhere('last_name', 'like', "%{$request->search}%");
+        }
+        if (
+            $request->has('ktp') && !is_null($request->ktp) 
+        ) {
+            $employees->where('ktp', 'like', "%{$request->ktp}%");
+        }
+        if ($request->has('position') && !is_null($request->position)){
+            $employees->where('position', 'like', "%{$request->position}%");
+        }
+        $employees = $employees->get();
         return view('employee.index', [
-            'employees' => $employees->get(),
+            'employees' => $employees,
         ]);
         
     }

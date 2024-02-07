@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\employee;
-use App\Models\Employee as ModelsEmployee;
+use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,7 +15,7 @@ class EmployeeSeeder extends Seeder
     public function run(): void
     {
         for ($i=0; $i < 15; $i++) { 
-            ModelsEmployee::ceate(
+            Employee::create(
                 [
                     'first_name' => 'Employee',
                     'last_name' => 'Seed',
